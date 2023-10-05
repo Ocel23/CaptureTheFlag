@@ -47,6 +47,7 @@ public final class CaptureTheFlag extends JavaPlugin {
 
         gameStatus = new GameStatus();
         scoreboard = new Scoreboard(this);
+        tablist = new Tablist();
         game = new Game(this, scoreboard, gameStatus, map);
         lobby = new Lobby(this, scoreboard, game, gameStatus, map, tablist);
 
