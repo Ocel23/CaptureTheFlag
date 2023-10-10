@@ -1,0 +1,66 @@
+countPlayersForStartGame: 1
+nameOfGameWorld: 'Castle'
+nameOfLobbyWorld: 'world'
+spawnsTeamsLocations:
+  redX: -26.0
+  blueX: -18.0
+  y: -60.0
+  z: -20.0
+  pitch: 1.0
+  yaw: 1.0
+lobbyTimerSeconds: 30
+gameTimer:
+  seconds: 60
+  minutes: 9
+copperSpawner1Location:
+  x: -11.0
+  y: -60.0
+  z: -18.0
+copperSpawner2Location:
+  x: -32.0
+  y: -60.0
+  z: -18.0
+ironSpawner1Location:
+  x: -29.0
+  y: -60.0
+  z: -9.0
+ironSpawner2Location:
+  x: -18.0
+  y: -60.0
+  z: -24.0
+diamondSpawnerLocation:
+  x: -22.0
+  y: -60.0
+  z: -11.0
+redFlagLocation:
+  x: -30.0
+  y: -59.0
+  z: -18.0
+blueFlagLocation:
+  x: -14.0
+  y: -59.0
+  z: -18.0
+lobbySpawnLocation:
+  x: -177.0
+  y: 63.0
+  z: 453.0
+  pitch: 1.0
+  yaw: 1.0
+redTeamSpawnLocation:
+  x: -28.0
+  y: -59.0
+  z: -18.0
+  pitch: 1.0
+  yaw: 1.0
+blueTeamSpawnLocation:
+  x: -16.0
+  y: -59.0
+  z: -18.0
+  pitch: 1.0
+  yaw: 1.0
+waitForSpawnLocation:
+  x: -23.0
+  y: -38.0
+  z: -18.0
+  pitch: 1.0
+  yaw: 1.0
