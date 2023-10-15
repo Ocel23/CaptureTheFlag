@@ -99,14 +99,6 @@ public class SpectatorPlayersGui implements Listener {
 
         player.openInventory(inventory);
 
-
-    }
-
-    public void addItem(Player p) {
-
-        Inventory inventory = p.getInventory();
-
-        inventory.setItem(5, Uttils.getItem(new ItemStack(Material.COMPASS), "&7Teleport menu", "&fPravím kliknutím zobrazíš menu pro teleportaci k hráči."));
     }
 
     public ItemStack getPlayerHead(String player) {

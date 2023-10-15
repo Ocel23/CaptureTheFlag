@@ -5,9 +5,11 @@ spawnsTeamsLocations:
   redX: -26.0
   blueX: -18.0
   y: -60.0
-  z: -20.0
+  blueZ: -20.0
+  redZ: -20.0
+  blueYaw: 1.0
+  redYaw: 1.0
   pitch: 1.0
-  yaw: 1.0
 lobbyTimerSeconds: 30
 gameTimer:
   seconds: 60
@@ -62,5 +64,17 @@ waitForSpawnLocation:
   x: -23.0
   y: -38.0
   z: -18.0
-  pitch: 1.0
+  pitch: 90.0
+  yaw: 90.0
+blueVillagerShopLocation:
+  x: -14.5
+  y: 65.0
+  z: -85.5
+  pitch: -90.0
   yaw: 1.0
+redVillagerShopLocation:
+  x: -4.5
+  y: 65.0
+  z: 50.5
+  pitch: 90.0
+  yaw: -1.0

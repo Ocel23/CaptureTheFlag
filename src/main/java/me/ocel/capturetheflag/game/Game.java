@@ -22,6 +22,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Game implements Listener {
@@ -83,7 +84,7 @@ public class Game implements Listener {
 
         Player player = e.getPlayer();
 
-        waitForSpawn(player);
+        waitForSpawn(player, e);
 
     }
 
@@ -117,34 +118,34 @@ public class Game implements Listener {
 
         for (Player p : plugin.getServer().getOnlinePlayers()) {
             p.sendTitle(ChatColor.GOLD + "Vyhrál", team + ChatColor.WHITE + " team!", 80, 20, 20);
-            Location location = new Location(plugin.getServer().getWorld("world"), this.configuration.getDouble("lobbySpawnLocation.x"), this.configuration.getDouble("lobbySpawnLocation.y"), this.configuration.getDouble("lobbySpawnLocation.z"));
-            p.teleport(location);
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 100, 20);
-            TeamSelectGui.addItem(p);
+            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                Location location = new Location(plugin.getServer().getWorld(this.configuration.getString("nameOfLobbyWorld")), this.configuration.getDouble("lobbySpawnLocation.x"), this.configuration.getDouble("lobbySpawnLocation.y"), this.configuration.getDouble("lobbySpawnLocation.z"));
+                p.teleport(location);
+                TeamSelectGui.addItem(p);
+                gameMap.restoreFromSource();
+            }, 40L);
             resetPlayerSettings(p);
+            resetGameSettings();
         }
-        resetGameSettings();
-        gameMap.restoreFromSource();
     }
 
 
     //method for end game - if is draw
     public void drawEndGame() {
         for (Player p : plugin.getServer().getOnlinePlayers()) {
-            p.getInventory().clear();
-            p.setAllowFlight(false);
-            if (p.isFlying()) {
-                p.setFlying(false);
-            }
             p.sendTitle(ChatColor.GOLD + "Remíza", "", 80, 20, 20);
-            Location location = new Location(plugin.getServer().getWorld("world"), this.configuration.getDouble("lobbySpawnLocation.x"), this.configuration.getDouble("lobbySpawnLocation.y"), this.configuration.getDouble("lobbySpawnLocation.z"));
-            p.teleport(location);
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 100, 20);
-            TeamSelectGui.addItem(p);
             resetPlayerSettings(p);
+            resetGameSettings();
+            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                Location location = new Location(plugin.getServer().getWorld(this.configuration.getString("nameOfLobbyWorld")), this.configuration.getDouble("lobbySpawnLocation.x"), this.configuration.getDouble("lobbySpawnLocation.y"), this.configuration.getDouble("lobbySpawnLocation.z"));
+                p.teleport(location);
+                TeamSelectGui.addItem(p);
+                gameMap.restoreFromSource();
+            }, 40L);
         }
-        resetGameSettings();
-        gameMap.restoreFromSource();
+
     }
 
 
@@ -173,13 +174,19 @@ public class Game implements Listener {
     }
 
     private void resetPlayerSettings(Player player) {
+        player.setHealth(20);
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
+        }
+        player.setGameMode(GameMode.ADVENTURE);
+        player.setInvisible(false);
+        player.showPlayer(plugin, player);
         player.getInventory().clear();
         player.setAllowFlight(false);
-        if (player.isFlying()) {
-            player.setFlying(false);
-        }
+        player.setFlying(false);
         player.setPlayerListName(ChatColor.WHITE + player.getName());
         player.setGlowing(false);
+        player.setFoodLevel(20);
     }
 
     private void resetGameSettings() {
@@ -190,26 +197,32 @@ public class Game implements Listener {
         status.setStatus("Waiting");
         timer.resetTimerSettings();
         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), "resettimer");
-
     }
 
 
     //method for teleport player when is dead - cool down to spawn
-    private void waitForSpawn(Player player) {
+    private void waitForSpawn(Player player, PlayerRespawnEvent e) {
         player.setGameMode(GameMode.ADVENTURE);
         player.setAllowFlight(true);
         player.setFlying(true);
-        Location location2 = new Location(gameMap.getWorld(), this.configuration.getDouble("waitForSpawnLocation.x"), this.configuration.getDouble("waitForSpawnLocation.y"), this.configuration.getDouble("waitForSpawnLocation.z"));
-        player.teleport(location2);
+        player.setInvisible(true);
+        Location location2 = new Location(gameMap.getWorld(), this.configuration.getDouble("waitForSpawnLocation.x"), this.configuration.getDouble("waitForSpawnLocation.y"), this.configuration.getDouble("waitForSpawnLocation.z"), (float) this.configuration.getDouble("waitForSpawnLocation.yaw"), (float) this.configuration.getDouble("waitForSpawnLocation.pitch"));
+        e.setRespawnLocation(location2);
+        double x = this.configuration.getDouble("waitForSpawnLocation.x");
+        double y = this.configuration.getDouble("waitForSpawnLocation.y");
+        double z = this.configuration.getDouble("waitForSpawnLocation.z");
+        float pitch = (float) this.configuration.getDouble("waitForSpawnLocation.pitch");
+        float yaw = (float) this.configuration.getDouble("waitForSpawnLocation.yaw");
+
+        System.out.println("Read from config: x=" + x + ", y=" + y + ", z=" + z + ", pitch=" + pitch + ", yaw=" + yaw);
         Location location1;
         if (player.getPlayerListName().equalsIgnoreCase(ChatColor.BLUE + player.getName())) {
-            location1 = new Location(gameMap.getWorld(), this.configuration.getDouble("redTeamSpawnLocation.x"), this.configuration.getDouble("redTeamSpawnLocation.y"), this.configuration.getDouble("redTeamSpawnLocation.z"));
+            location1 = new Location(gameMap.getWorld(), this.configuration.getDouble("blueTeamSpawnLocation.x"), this.configuration.getDouble("blueTeamSpawnLocation.y"), this.configuration.getDouble("blueTeamSpawnLocation.z"), (float) this.configuration.getDouble("blueTeamSpawnLocation.yaw"), (float) this.configuration.getDouble("blueTeamSpawnLocation.pitch"));
         } else {
-            location1 = new Location(gameMap.getWorld(), this.configuration.getDouble("blueTeamSpawnLocation.x"), this.configuration.getDouble("blueTeamSpawnLocation.y"), this.configuration.getDouble("redTeamSpawnLocation.z"));
+            location1 = new Location(gameMap.getWorld(), this.configuration.getDouble("redTeamSpawnLocation.x"), this.configuration.getDouble("redTeamSpawnLocation.y"), this.configuration.getDouble("redTeamSpawnLocation.z"), (float) this.configuration.getDouble("redTeamSpawnLocation.yaw"), (float) this.configuration.getDouble("redTeamSpawnLocation.pitch"));
         }
 
         player.getInventory().clear();
-
 
         new BukkitRunnable() {
             int seconds = 5;
@@ -224,6 +237,7 @@ public class Game implements Listener {
                     player.setFlying(false);
                     player.setGameMode(GameMode.SURVIVAL);
                     player.setGlowing(false);
+                    player.setInvisible(false);
                     cancel();
                 }
             }

@@ -5,18 +5,26 @@ import me.ocel.capturetheflag.game.shop.guis.*;
 import me.ocel.capturetheflag.game.shop.specialItems.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class ShopGuiManager implements CommandExecutor, Listener {
@@ -255,6 +263,39 @@ public class ShopGuiManager implements CommandExecutor, Listener {
                 player.sendMessage(ChatColor.RED + "Pro zakoupení nemáš dostatek materiálu.");
 
             }
+
+        }
+    }
+
+    @EventHandler
+    private void onPlayerInteract(PlayerInteractAtEntityEvent e) {
+
+        if (e.getRightClicked().getType() == EntityType.VILLAGER) {
+
+            Player player = e.getPlayer();
+
+            if (player.getGameMode() == GameMode.ADVENTURE) {
+                e.setCancelled(true);
+            }
+
+            player.performCommand("shop");
+
+        }
+
+    }
+
+    @EventHandler
+    private void onBlockPlace(BlockPlaceEvent e) {
+
+        Block block = e.getBlock();
+
+        if (block.getType() == Material.TNT) {
+
+            Player player = e.getPlayer();
+
+            TNTPrimed tntPrimed =  (TNTPrimed) player.getWorld().spawnEntity(block.getLocation(), EntityType.PRIMED_TNT);
+
+            e.setCancelled(true);
 
         }
     }

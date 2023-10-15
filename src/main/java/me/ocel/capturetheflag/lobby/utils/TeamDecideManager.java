@@ -44,9 +44,8 @@ public class TeamDecideManager {
     //method for pick random locations for player
     public void pickRandomLocations() {
 
-        redLocations = createSpawnLocations(this.configuration.getDouble("spawnsTeamsLocations.redX"));
-        blueLocations = createSpawnLocations(this.configuration.getDouble("spawnsTeamsLocations.blueX"));
-
+        redLocations = createSpawnLocations(this.configuration.getDouble("spawnsTeamsLocations.redX"), this.configuration.getDouble("spawnsTeamsLocations.redZ"), this.configuration.getDouble("spawnsTeamsLocations.redYaw"));
+        blueLocations = createSpawnLocations(this.configuration.getDouble("spawnsTeamsLocations.blueX"), this.configuration.getDouble("spawnsTeamsLocations.blueZ"), this.configuration.getDouble("spawnsTeamsLocations.blueYaw"));
 
         Random random = new Random();
 
@@ -64,7 +63,7 @@ public class TeamDecideManager {
                 countOfRedPlayers++;
             } else {
                 int randomNumber = random.nextInt(2);
-                if (countOfBluePlayers == 3) {
+                if (countOfBluePlayers == configuration.getInt("countPlayersForStartGame") / 2) {
                     randomNumber = 1;
                 }
                 if (randomNumber == 0) {
@@ -109,10 +108,10 @@ public class TeamDecideManager {
     }
 
     //help method for create single location
-    private Location[] createSpawnLocations(double x) {
+    private Location[] createSpawnLocations(double x, double z, double yaw) {
         Location[] locations = new Location[3];
         for (int i = 0; i < 3; i++) {
-            locations[i] = new Location(gameMap.getWorld(), x ,this.configuration.getDouble("spawnsTeamsLocations.y") , this.configuration.getDouble("spawnsTeamsLocations.z") + i + 1);
+            locations[i] = new Location(gameMap.getWorld(), x ,this.configuration.getDouble("spawnsTeamsLocations.y") , z + i + 1, (float) yaw, (float) this.configuration.getDouble("spawnsTeamsLocations.pitch"));
         }
         return locations;
     }

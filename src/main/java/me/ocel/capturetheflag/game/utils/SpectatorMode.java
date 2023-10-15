@@ -17,6 +17,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 public class SpectatorMode implements Listener {
 
@@ -30,12 +31,15 @@ public class SpectatorMode implements Listener {
 
     private final GameMap gameMap;
 
+    private boolean isTriggered;
+
     public SpectatorMode(CaptureTheFlag plugin, GameMap gameMap) {
         this.gameMap = gameMap;
         this.plugin = plugin;
         this.configuration = plugin.getConfig();
         this.spectatorPlayersGui = new SpectatorPlayersGui(plugin);
         this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        this.isTriggered = false;
     }
 
     //protect player in spectator mode to pickup items
@@ -64,33 +68,35 @@ public class SpectatorMode implements Listener {
 
     //teleport player when fall into void to spawn - cancel death in void
     @EventHandler
-    private void onPlayerBeforeFallToVoid(PlayerMoveEvent e) {
+    private void onPlayerMove(PlayerMoveEvent e) {
+
             Player player = e.getPlayer();
 
             if (e.getTo() == null) {
                 return;
             }
 
-            if (e.getTo().getBlockY() == -100) {
+            if (isSpectator(player)) {
 
-            player.teleport(this.spectatorSpawn);
+                if (e.getTo().getBlockY() >= -100 && !isTriggered) {
 
-            ItemStack returnToLobbyServer = Uttils.getItem(new ItemStack(Material.CLOCK), "&2Zpátky na lobby", "&7Kliknutím se teleportuješ na lobby serveru.");
+                    isTriggered = true;
 
-            Inventory inventory = player.getInventory();
+                    player.teleport(this.spectatorSpawn);
 
-            inventory.setItem(4, returnToLobbyServer);
+                    Inventory inventory = player.getInventory();
 
-            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                player.setGameMode(GameMode.ADVENTURE);
-                player.setAllowFlight(true);
-                player.setFlying(true);
-                player.setGlowing(false);
-                player.hidePlayer(plugin, player);
+                    plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                        player.setGameMode(GameMode.ADVENTURE);
+                        player.setAllowFlight(true);
+                        player.setFlying(true);
+                        player.setGlowing(false);
+                        player.hidePlayer(plugin, player);
 
-            }, 20L);
+                    }, 20L);
 
-        }
+                }
+            }
     }
 
     public void setSpectatorMode(Player player) {
@@ -105,24 +111,27 @@ public class SpectatorMode implements Listener {
 
         player.getInventory().clear();
 
-        ItemStack returnToLobbyServer = Uttils.getItem(new ItemStack(Material.CLOCK), "&2Zpátky na lobby", "&7Kliknutím se teleportuješ na lobby serveru.");
-
         Inventory inventory = player.getInventory();
 
-        inventory.setItem(3, returnToLobbyServer);
+        inventory.setItem(3, Uttils.getItem(new ItemStack(Material.CLOCK), "&2Zpátky na lobby", "&7Kliknutím se teleportuješ na lobby serveru."));
 
-        spectatorPlayersGui.addItem(player);
+        inventory.setItem(5, Uttils.getItem(new ItemStack(Material.COMPASS), "&7Teleport menu", "&fPravím kliknutím zobrazíš menu pro teleportaci k hráči."));
 
         player.setPlayerListName(ChatColor.GRAY + player.getName());
 
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            player.setGameMode(GameMode.ADVENTURE);
-            player.setAllowFlight(true);
-            player.setFlying(true);
-            player.setGlowing(false);
-            player.hidePlayer(plugin, player);
+        player.setGameMode(GameMode.ADVENTURE);
+        player.setAllowFlight(true);
+        player.setFlying(true);
+        player.setGlowing(false);
+        player.hidePlayer(plugin, player);
+        player.setInvisible(true);
+        player.setFoodLevel(20);
 
-        }, 20L);
+        player.setHealth(20);
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
+        }
+
     }
 
     public boolean isSpectator(Player player) {

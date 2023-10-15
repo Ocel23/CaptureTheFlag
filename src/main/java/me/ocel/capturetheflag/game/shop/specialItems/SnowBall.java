@@ -30,8 +30,8 @@ public class SnowBall implements Listener {
 
             Player player = (Player) e.getHitEntity();
 
-            player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 10, Integer.MAX_VALUE));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10, Integer.MAX_VALUE));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, Integer.MAX_VALUE));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 200, Integer.MAX_VALUE));
             player.sendMessage(ChatColor.GREEN + "Dostal jsi zásah toxickou koulí!");
 
         }

@@ -6,10 +6,14 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 
@@ -81,6 +85,25 @@ public class ProtectSettings implements Listener {
                     iterator.remove();
                 }
             }
+    }
+
+    @EventHandler
+    private void onEntityDamage(EntityDamageByEntityEvent e) {
+
+        if (e.getEntity().getType() == EntityType.PLAYER && e.getDamager().getType() == EntityType.PLAYER) {
+
+            Player damagedPlayer = (Player) e.getEntity();
+
+            Player damagerPlayer = (Player) e.getDamager();
+
+            String damagedPlayerTeamColor = damagedPlayer.getPlayerListName().substring(1, 2);
+
+            String damagerPlayerTeamColor = damagerPlayer.getPlayerListName().substring(1, 2);
+
+            if (damagedPlayerTeamColor.equalsIgnoreCase(damagerPlayerTeamColor)) {
+                e.setCancelled(true);
+            }
+        }
     }
 
     //helper function for protect single location

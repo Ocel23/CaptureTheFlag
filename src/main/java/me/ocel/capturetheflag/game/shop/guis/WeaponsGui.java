@@ -20,7 +20,7 @@ public class WeaponsGui {
 
         inventory.setItem(9, knockbackStick);
         inventory.setItem(10, Uttils.getItem(new ItemStack(Material.WOODEN_SWORD), "&6Dřevěný meč", "", "&6&l8 bronzů", ""));
-        inventory.setItem(11, Uttils.getItem(new ItemStack(Material.STONE_SWORD), "&7Kamenný meč", "", "&6&l6 bronzů", ""));
+        inventory.setItem(11, Uttils.getItem(new ItemStack(Material.STONE_SWORD), "&7Kamenný meč", "", "&6&l24 bronzů", ""));
         inventory.setItem(12, Uttils.getItem(new ItemStack(Material.IRON_SWORD), "&fŽelezný meč", "", "&f&l4 železa", ""));
         inventory.setItem(13, Uttils.getItem(new ItemStack(Material.DIAMOND_SWORD), "&bDiamantový meč", "", "&b&l4 diamanty", ""));
         inventory.setItem(14, null);

@@ -24,9 +24,7 @@ public class IronSpawner implements Spawner{
 
     private Location spawnerlocation;
 
-    private Location hologramLocation1;
-
-    private Location hologramLocation2;
+    private Location hologramLocation;
 
     private int seconds;
 
@@ -36,16 +34,22 @@ public class IronSpawner implements Spawner{
         this.gameMap = gameMap;
         this.configuration = plugin.getConfig();
         spawnerlocation = new Location(gameMap.getWorld(), this.configuration.getDouble(x), configuration.getDouble(y), configuration.getDouble(z));
-        hologramLocation1 = new Location(gameMap.getWorld(),  this.configuration.getDouble(x) + 0.5, configuration.getDouble(y) - 1, configuration.getDouble(z) + 0.5);
-        hologramLocation2 = new Location(gameMap.getWorld(),  this.configuration.getDouble(x) + 0.5, configuration.getDouble(y), configuration.getDouble(z) + 0.5);
+        hologramLocation = spawnerlocation;
     }
 
     public void createHolograms() {
-        ironSpawnerHologram1 = (ArmorStand) gameMap.getWorld().spawnEntity(hologramLocation1, EntityType.ARMOR_STAND);
+        hologramLocation.subtract(0,1, 0);
+        hologramLocation.add(0.5,0, 0.5);
+        ironSpawnerHologram1 = (ArmorStand) gameMap.getWorld().spawnEntity(hologramLocation, EntityType.ARMOR_STAND);
         ironSpawnerHologram1.setVisible(false);
+        ironSpawnerHologram1.setCollidable(false);
+        ironSpawnerHologram1.setGravity(false);
         ironSpawnerHologram1.setCustomNameVisible(true);
-        ironSpawnerHologram2 = (ArmorStand) gameMap.getWorld().spawnEntity(hologramLocation2, EntityType.ARMOR_STAND);
+        hologramLocation.add(0,0.5, 0);
+        ironSpawnerHologram2 = (ArmorStand) gameMap.getWorld().spawnEntity(hologramLocation, EntityType.ARMOR_STAND);
         ironSpawnerHologram2.setVisible(false);
+        ironSpawnerHologram2.setCollidable(false);
+        ironSpawnerHologram2.setGravity(false);
         ironSpawnerHologram2.setCustomNameVisible(true);
         ironSpawnerHologram2.setCustomName(ChatColor.GRAY + "" + ChatColor.BOLD + "Iron");
     }

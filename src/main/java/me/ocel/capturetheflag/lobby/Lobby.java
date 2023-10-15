@@ -15,13 +15,20 @@ import me.ocel.capturetheflag.lobby.utils.ProtectSettings;
 import me.ocel.capturetheflag.Scoreboard;
 import me.ocel.capturetheflag.lobby.utils.Tablist;
 import me.ocel.capturetheflag.lobby.utils.TeamSelectGui;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.*;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class Lobby implements Listener {
 
@@ -44,6 +51,8 @@ public class Lobby implements Listener {
     private final GameMap gameMap;
 
     private final FileConfiguration configuration;
+
+    private final List<UUID> playersOfCompleteParkur = new ArrayList<>();
 
     public Lobby(CaptureTheFlag plugin, Scoreboard scoreboard, Game game, GameStatus statusOfGame, GameMap gameMap, Tablist tablist) {
 
@@ -73,6 +82,7 @@ public class Lobby implements Listener {
 
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent e) {
+            e.getPlayer().setGameMode(GameMode.ADVENTURE);
             e.getPlayer().getInventory().clear();
             //create tablist for player
             tablist.createTablist(e);
@@ -84,38 +94,63 @@ public class Lobby implements Listener {
             //open team decide gui for player
             gui.showGui(e.getPlayer());
             TeamSelectGui.addItem(e.getPlayer());
-            //if game already starting then return
-            if (this.statusOfGame.getStatus().equalsIgnoreCase("Starting")) {
-               return;
-            }
-            startCounter();
-    }
-
-    public void startCounter() {
-        //check if is enough players
-        plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-            if (Bukkit.getOnlinePlayers().size() == configuration.getInt("countPlayersForStartGame")) {
-                this.statusOfGame.setStatus("Starting");
-                //update timer every seconds
-                timer.updateTimer();
-            }
-            //update scoreboard every second
+            Location lobbyLocation = new Location(plugin.getServer().getWorld(this.configuration.getString("nameOfLobbyWorld")), this.configuration.getDouble("lobbySpawnLocation.x"), this.configuration.getDouble("lobbySpawnLocation.y"), this.configuration.getDouble("lobbySpawnLocation.z"), (float) this.configuration.getDouble("lobbySpawnLocation.yaw"), (float) this.configuration.getDouble("lobbySpawnLocation.pitch"));
+            e.getPlayer().teleport(lobbyLocation);
             scoreboard.updateLobbyScoreboard(
                     ChatColor.GOLD + "Stav: " + ChatColor.WHITE + timer.getStatus(),
                     ChatColor.GOLD + "Hráči: " + ChatColor.WHITE + plugin.getServer().getOnlinePlayers().size() + ChatColor.GOLD + "/" + ChatColor.WHITE + "6",
                     ChatColor.GOLD + "Mapa: " + ChatColor.WHITE + "Castle"
             );
-        }, 0L, 20L);
+            if (plugin.getServer().getOnlinePlayers().size() == this.configuration.getInt("countPlayersForStartGame")) {
+                startCounter();
+            }
+    }
+
+    public void startCounter() {
+            this.statusOfGame.setStatus("Starting");
+            plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+                //update timer every seconds
+                timer.updateTimer();
+                //update scoreboard every second
+                scoreboard.updateLobbyScoreboard(
+                        ChatColor.GOLD + "Stav: " + ChatColor.WHITE + timer.getStatus(),
+                        ChatColor.GOLD + "Hráči: " + ChatColor.WHITE + plugin.getServer().getOnlinePlayers().size() + ChatColor.GOLD + "/" + ChatColor.WHITE + "6",
+                        ChatColor.GOLD + "Mapa: " + ChatColor.WHITE + "Castle"
+                );
+            }, 0L, 20L);
     }
 
     @EventHandler
     private void onPlayerQuit(PlayerQuitEvent e) {
-        //if is not enough player then reset timer
-        if (e.getPlayer().getWorld().getName().equalsIgnoreCase(configuration.getString("nameOfLobbyWorld"))) {
-            if (plugin.getServer().getOnlinePlayers().size() == 1) {
+
+        if (e.getPlayer().getWorld().getName().equalsIgnoreCase(this.configuration.getString("nameOfLobbyWorld"))) {
+            //if is not enough player then reset timer
+            if (plugin.getServer().getOnlinePlayers().size() == configuration.getInt("countPlayersForStartGame")) {
                 timer.resetTimer();
             }
         }
+    }
+
+    @EventHandler
+    private void onPlayerMove(PlayerMoveEvent e) {
+
+        Player player = e.getPlayer();
+
+        Location location = player.getLocation();
+
+        if (player.getWorld().getName().equalsIgnoreCase(configuration.getString("nameOfLobbyWorld")) && location.getBlock().getRelative(BlockFace.DOWN).getType() == Material.DIAMOND_BLOCK) {
+
+            if (playersOfCompleteParkur.contains(player.getUniqueId())) {
+                return;
+            }
+
+            playersOfCompleteParkur.add(player.getUniqueId());
+            player.sendMessage(ChatColor.GREEN + "Dokončil jsi parkur!");
+            player.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, location, 100);
+            player.playSound(location, Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 100, 20);
+            player.playSound(location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 70, 20);
+        }
+
     }
 
 

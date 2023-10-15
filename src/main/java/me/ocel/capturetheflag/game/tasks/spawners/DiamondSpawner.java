@@ -24,9 +24,7 @@ public class DiamondSpawner implements Spawner{
 
     private Location spawnerlocation;
 
-    private Location hologramLocation1;
-
-    private Location hologramLocation2;
+    private Location hologramLocation;
 
     private int seconds;
 
@@ -35,18 +33,23 @@ public class DiamondSpawner implements Spawner{
         this.plugin = plugin;
         this.gameMap = gameMap;
         this.configuration = plugin.getConfig();
-        spawnerlocation = new Location(gameMap.getWorld(), this.configuration.getDouble("diamondSpawnerLocation.x"), configuration.getDouble("diamondSpawnerLocation.y"), configuration.getDouble("diamondSpawnerLocation.z"));
-        hologramLocation1 = new Location(gameMap.getWorld(), this.configuration.getDouble("diamondSpawnerLocation.x") + 0.5, configuration.getDouble("diamondSpawnerLocation.y") - 1, configuration.getDouble("diamondSpawnerLocation.z") + 0.5);
-        hologramLocation2 = new Location(gameMap.getWorld(), this.configuration.getDouble("diamondSpawnerLocation.x") + 0.5, configuration.getDouble("diamondSpawnerLocation.y"), configuration.getDouble("diamondSpawnerLocation.z") + 0.5);
-
+        this.spawnerlocation = new Location(gameMap.getWorld(), this.configuration.getDouble("diamondSpawnerLocation.x"), configuration.getDouble("diamondSpawnerLocation.y"), configuration.getDouble("diamondSpawnerLocation.z"));
+        this.hologramLocation = spawnerlocation;
     }
 
     public void createHolograms() {
-        diamondSpawnerHologram1 = (ArmorStand) gameMap.getWorld().spawnEntity(hologramLocation1, EntityType.ARMOR_STAND);
+        hologramLocation.subtract(0, 1, 0);
+        hologramLocation.add(0.5,0, 0.5);
+        diamondSpawnerHologram1 = (ArmorStand) gameMap.getWorld().spawnEntity(hologramLocation, EntityType.ARMOR_STAND);
         diamondSpawnerHologram1.setVisible(false);
+        diamondSpawnerHologram1.setGravity(false);
+        diamondSpawnerHologram1.setCollidable(false);
         diamondSpawnerHologram1.setCustomNameVisible(true);
-        diamondSpawnerHologram2 = (ArmorStand) gameMap.getWorld().spawnEntity(hologramLocation2, EntityType.ARMOR_STAND);
+        hologramLocation.add(0,0.5, 0);
+        diamondSpawnerHologram2 = (ArmorStand) gameMap.getWorld().spawnEntity(hologramLocation, EntityType.ARMOR_STAND);
         diamondSpawnerHologram2.setVisible(false);
+        diamondSpawnerHologram2.setGravity(false);
+        diamondSpawnerHologram2.setCollidable(false);
         diamondSpawnerHologram2.setCustomNameVisible(true);
         diamondSpawnerHologram2.setCustomName(ChatColor.AQUA + "" + ChatColor.BOLD + "Diamond");
     }

@@ -40,8 +40,6 @@ public class FreezeBomb implements Listener {
             }
 
             player.getServer().getScheduler().runTaskLater(plugin, () ->  {
-
-                player.sendMessage(ChatColor.WHITE + "Už jsi znova " + ChatColor.AQUA + "odmražen.");
                 player.getLocation().getBlock().setType(Material.AIR);
                 player.setFreezeTicks(0);
                 e.setCancelled(false);

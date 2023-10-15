@@ -13,6 +13,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +24,6 @@ public class TeamSelectGui implements Listener {
     private final CaptureTheFlag plugin;
 
     private final FileConfiguration configuration;
-
-    private final List<Player> players = new ArrayList<>();
 
     public TeamSelectGui(CaptureTheFlag plugin) {
         this.plugin = plugin;
@@ -39,19 +39,51 @@ public class TeamSelectGui implements Listener {
 
         Inventory inventory = Bukkit.createInventory(p, 9 * 3, ChatColor.WHITE + "Výběr teamu:");
 
-        String bluePlayers = "";
-        String redPlayers = "";
 
-        for (Player player : players) {
-            if (player.getPlayerListName().equalsIgnoreCase(ChatColor.BLUE + player.getName())) {
-                bluePlayers += player.getName() + "\n";
-            } else {
-                redPlayers += player.getName() + "\n";
+        ItemStack blueBanner = new ItemStack(Material.BLUE_BANNER);
+
+        ItemStack redBanner = new ItemStack(Material.RED_BANNER);
+
+
+        ItemMeta blueBannerItemMeta = blueBanner.getItemMeta();
+
+
+        ItemMeta redBannerItemMeta = blueBanner.getItemMeta();
+
+        if (blueBannerItemMeta == null || redBannerItemMeta == null) {
+            return;
+        }
+
+        blueBannerItemMeta.setDisplayName(ChatColor.BLUE + "Modrý team");
+
+        redBannerItemMeta.setDisplayName(ChatColor.RED + "Červený team");
+
+        List<String> redLores = new ArrayList<>();
+        List<String> blueLores = new ArrayList<>();
+
+
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+
+            int team = Uttils.getTeam(player);
+
+            if (team == 0) {
+                blueLores.add(ChatColor.WHITE + player.getName());
+            } else if (team == 1){
+                redLores.add(ChatColor.WHITE + player.getName());
             }
         }
 
-        inventory.setItem(12, Uttils.getItem(new ItemStack(Material.BLUE_BANNER), "&9Modrý team", "&f" + bluePlayers));
-        inventory.setItem(14, Uttils.getItem(new ItemStack(Material.RED_BANNER), "&cČervený team", "&f" + redPlayers));
+        blueBannerItemMeta.setLore(blueLores);
+
+        redBannerItemMeta.setLore(redLores);
+
+        blueBanner.setItemMeta(blueBannerItemMeta);
+
+        redBanner.setItemMeta(redBannerItemMeta);
+
+        inventory.setItem(12, blueBanner);
+
+        inventory.setItem(14, redBanner);
 
         p.openInventory(inventory);
     }
@@ -88,21 +120,21 @@ public class TeamSelectGui implements Listener {
             }
 
             if (e.getCurrentItem().getType() == Material.BLUE_BANNER) {
-                if (!protectCount()) {
+                if (!(protectCount())) {
                     p.sendMessage(ChatColor.RED +  "Tento tento tým je už nyní plný.");
+                    p.closeInventory();
                     return;
                 }
-                players.add(p);
                 p.sendMessage(ChatColor.BLUE + "Připojil jsi se do modrého teamu.");
                 p.setPlayerListName(ChatColor.BLUE + p.getName());
                 p.closeInventory();
 
             } else if(e.getCurrentItem().getType() == Material.RED_BANNER) {
-                if (!protectCount()) {
+                if (!(protectCount())) {
                     p.sendMessage(ChatColor.RED +  "Tento tento tým je už nyní plný.");
+                    p.closeInventory();
                     return;
                 }
-                players.add(p);
                 p.sendMessage(ChatColor.RED + "Připojil jsi se do červeného teamu.");
                 p.setPlayerListName(ChatColor.RED + p.getName());
                 p.closeInventory();
@@ -120,19 +152,25 @@ public class TeamSelectGui implements Listener {
         int redCountOfPlayers = 0;
         int blueCountOfPlayer = 0;
 
+        int maxCount = configuration.getInt("countPlayersForStartGame") / 2;
+
         for (Player player : plugin.getServer().getOnlinePlayers()) {
 
             int team = Uttils.getTeam(player);
 
             if (team == 0) {
-                redCountOfPlayers++;
-            } else if(team == 1) {
+                if (blueCountOfPlayer == maxCount) {
+                    return false;
+                }
                 blueCountOfPlayer++;
+            } else if (team == 1) {
+                if (redCountOfPlayers == maxCount) {
+                    return false;
+                }
+                redCountOfPlayers++;
             }
-        }
 
-        int maxCount = configuration.getInt("countPlayersForStartGame") / 2;
-        if (redCountOfPlayers == maxCount || blueCountOfPlayer == maxCount) return false;
+        }
 
         return true;
     }

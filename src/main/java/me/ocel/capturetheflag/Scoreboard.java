@@ -110,7 +110,7 @@ public class Scoreboard implements Listener {
             "",
             line3,
             "",
-            ChatColor.WHITE + "     play.pigger.eu"
+            ChatColor.WHITE + "          play.pigger.eu"
         );
     }
 
