@@ -63,6 +63,7 @@ public class LocalGameMap implements GameMap, Listener {
         this.bukkitWorld.setGameRule(GameRule.SEND_COMMAND_FEEDBACK, false);
         this.bukkitWorld.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, false);
         this.bukkitWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+        this.bukkitWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
 
         /*

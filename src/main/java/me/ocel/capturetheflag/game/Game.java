@@ -150,14 +150,10 @@ public class Game implements Listener {
 
 
     private ItemStack getBlueFlag() {
-
         return Uttils.getItem(new ItemStack(Material.BLUE_BANNER), ChatColor.BLUE + "Modrá vlajka", ChatColor.WHITE + "Klikni s ní na červenou flajku.");
-
     }
     private ItemStack getRedFlag() {
-
         return Uttils.getItem(new ItemStack(Material.RED_BANNER), ChatColor.RED + "Červená vlajka", ChatColor.WHITE + "Klikni s ní na červenou flajku.");
-
     }
 
     private void sendInfoMessage(Player player) {
