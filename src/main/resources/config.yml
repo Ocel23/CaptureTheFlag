@@ -78,3 +78,7 @@ redVillagerShopLocation:
   z: 50.5
   pitch: 90.0
   yaw: -1.0
+worldBorderCenter:
+  x: -10
+  y: 75
+  z: -18

@@ -170,7 +170,7 @@ public class ShopGuiManager implements CommandExecutor, Listener {
 
                 String color = itemMeta.getLore().get(1).substring(1, 2);
 
-                int price = Integer.parseInt(itemMeta.getLore().get(1).substring(4, 5));
+                int price = itemMeta.getLore().get(1).substring(5, 6).equalsIgnoreCase(" ") ? Integer.parseInt(itemMeta.getLore().get(1).substring(4, 5)) : Integer.parseInt(itemMeta.getLore().get(1).substring(4, 6));
 
                 Material material;
 

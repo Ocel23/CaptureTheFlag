@@ -65,15 +65,27 @@ public class LocalGameMap implements GameMap, Listener {
         this.bukkitWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
         this.bukkitWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
+        this.bukkitWorld.setTime(1000);
+        this.bukkitWorld.setThundering(false);
+        this.bukkitWorld.setStorm(false);
+
+        FileConfiguration configuration = plugin.getConfig();
+
+        WorldBorder worldBorder = getWorld().getWorldBorder();
+
+        Location centerOfBorder = new Location(getWorld(), configuration.getDouble("worldBorderCenter.x"), configuration.getDouble("worldBorderCenter.y"), configuration.getDouble("worldBorderCenter.z"));
+
+        worldBorder.setCenter(centerOfBorder);
+
+        worldBorder.setSize(200);
+
+        worldBorder.setDamageAmount(0);
 
         /*
         NPC redNpc = CitizensAPI.getNPCRegistry().createNPC(EntityType.VILLAGER, "&c&lObchod");
 
         redNpc.spawn(new Location(getWorld(), -4.178, 65.0, 50.522, 90.3F, -0.9F));
         */
-
-
-        FileConfiguration configuration = plugin.getConfig();
 
         Location redVillagerLocation = new Location(
                 getWorld()

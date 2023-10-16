@@ -119,15 +119,17 @@ public class Game implements Listener {
         for (Player p : plugin.getServer().getOnlinePlayers()) {
             p.sendTitle(ChatColor.GOLD + "Vyhrál", team + ChatColor.WHITE + " team!", 80, 20, 20);
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 100, 20);
-            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                Location location = new Location(plugin.getServer().getWorld(this.configuration.getString("nameOfLobbyWorld")), this.configuration.getDouble("lobbySpawnLocation.x"), this.configuration.getDouble("lobbySpawnLocation.y"), this.configuration.getDouble("lobbySpawnLocation.z"));
+            resetPlayerSettings(p);
+        }
+        resetGameSettings();
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            Location location = new Location(plugin.getServer().getWorld(this.configuration.getString("nameOfLobbyWorld")), this.configuration.getDouble("lobbySpawnLocation.x"), this.configuration.getDouble("lobbySpawnLocation.y"), this.configuration.getDouble("lobbySpawnLocation.z"));
+            for (Player p: plugin.getServer().getOnlinePlayers()) {
                 p.teleport(location);
                 TeamSelectGui.addItem(p);
-                gameMap.restoreFromSource();
-            }, 40L);
-            resetPlayerSettings(p);
-            resetGameSettings();
-        }
+            }
+            gameMap.restoreFromSource();
+        }, 40L);
     }
 
 
@@ -137,15 +139,16 @@ public class Game implements Listener {
             p.sendTitle(ChatColor.GOLD + "Remíza", "", 80, 20, 20);
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 100, 20);
             resetPlayerSettings(p);
-            resetGameSettings();
-            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                Location location = new Location(plugin.getServer().getWorld(this.configuration.getString("nameOfLobbyWorld")), this.configuration.getDouble("lobbySpawnLocation.x"), this.configuration.getDouble("lobbySpawnLocation.y"), this.configuration.getDouble("lobbySpawnLocation.z"));
+        }
+        resetGameSettings();
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            Location location = new Location(plugin.getServer().getWorld(this.configuration.getString("nameOfLobbyWorld")), this.configuration.getDouble("lobbySpawnLocation.x"), this.configuration.getDouble("lobbySpawnLocation.y"), this.configuration.getDouble("lobbySpawnLocation.z"));
+            for (Player p: plugin.getServer().getOnlinePlayers()) {
                 p.teleport(location);
                 TeamSelectGui.addItem(p);
-                gameMap.restoreFromSource();
-            }, 40L);
-        }
-
+            }
+            gameMap.restoreFromSource();
+        }, 40L);
     }
 
 
