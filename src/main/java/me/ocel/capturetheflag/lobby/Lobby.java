@@ -1,6 +1,7 @@
 package me.ocel.capturetheflag.lobby;
 
 import me.ocel.capturetheflag.CaptureTheFlag;
+import me.ocel.capturetheflag.Uttils;
 import me.ocel.capturetheflag.game.Game;
 import me.ocel.capturetheflag.game.utils.SpectatorMode;
 import me.ocel.capturetheflag.GameStatus;
@@ -24,6 +25,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,8 +84,8 @@ public class Lobby implements Listener {
 
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent e) {
-            e.getPlayer().setGameMode(GameMode.ADVENTURE);
-            e.getPlayer().getInventory().clear();
+            Player player = e.getPlayer();
+            Uttils.resetPlayerSettings(player, plugin);
             //create tablist for player
             tablist.createTablist(e);
             //check status of game

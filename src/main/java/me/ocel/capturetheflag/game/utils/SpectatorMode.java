@@ -31,15 +31,12 @@ public class SpectatorMode implements Listener {
 
     private final GameMap gameMap;
 
-    private boolean isTriggered;
-
     public SpectatorMode(CaptureTheFlag plugin, GameMap gameMap) {
         this.gameMap = gameMap;
         this.plugin = plugin;
         this.configuration = plugin.getConfig();
         this.spectatorPlayersGui = new SpectatorPlayersGui(plugin);
         this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        this.isTriggered = false;
     }
 
     //protect player in spectator mode to pickup items
@@ -78,9 +75,7 @@ public class SpectatorMode implements Listener {
 
             if (isSpectator(player)) {
 
-                if (e.getTo().getBlockY() >= -100 && !isTriggered) {
-
-                    isTriggered = true;
+                if (e.getTo().getBlockY() <= 0) {
 
                     player.teleport(this.spectatorSpawn);
 

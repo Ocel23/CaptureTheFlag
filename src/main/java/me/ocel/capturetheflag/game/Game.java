@@ -119,7 +119,7 @@ public class Game implements Listener {
         for (Player p : plugin.getServer().getOnlinePlayers()) {
             p.sendTitle(ChatColor.GOLD + "Vyhrál", team + ChatColor.WHITE + " team!", 80, 20, 20);
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 100, 20);
-            resetPlayerSettings(p);
+            Uttils.resetPlayerSettings(player, plugin);
         }
         resetGameSettings();
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
@@ -138,7 +138,7 @@ public class Game implements Listener {
         for (Player p : plugin.getServer().getOnlinePlayers()) {
             p.sendTitle(ChatColor.GOLD + "Remíza", "", 80, 20, 20);
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 100, 20);
-            resetPlayerSettings(p);
+            Uttils.resetPlayerSettings(p, plugin);
         }
         resetGameSettings();
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
@@ -170,22 +170,6 @@ public class Game implements Listener {
         player.sendMessage(ChatColor.WHITE + "---------------------------");
         player.sendMessage("");
         player.sendMessage(ChatColor.GOLD + "            Hodně štestí");
-    }
-
-    private void resetPlayerSettings(Player player) {
-        player.setHealth(20);
-        for (PotionEffect effect : player.getActivePotionEffects()) {
-            player.removePotionEffect(effect.getType());
-        }
-        player.setGameMode(GameMode.ADVENTURE);
-        player.setInvisible(false);
-        player.showPlayer(plugin, player);
-        player.getInventory().clear();
-        player.setAllowFlight(false);
-        player.setFlying(false);
-        player.setPlayerListName(ChatColor.WHITE + player.getName());
-        player.setGlowing(false);
-        player.setFoodLevel(20);
     }
 
     private void resetGameSettings() {

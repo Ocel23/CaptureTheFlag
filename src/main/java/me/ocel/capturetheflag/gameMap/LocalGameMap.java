@@ -1,16 +1,10 @@
 package me.ocel.capturetheflag.gameMap;
 
 import me.ocel.capturetheflag.CaptureTheFlag;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.trait.ClickRedirectTrait;
-import net.citizensnpcs.trait.CommandTrait;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 import java.io.File;
 import java.io.IOException;

@@ -25,12 +25,9 @@ public class ProtectSettings implements Listener {
 
     private final FileConfiguration configuration;
 
-    private boolean isTriggered;
-
     public ProtectSettings(CaptureTheFlag plugin) {
         this.plugin = plugin;
         this.configuration = plugin.getConfig();
-        this.isTriggered = false;
     }
 
 
@@ -71,9 +68,7 @@ public class ProtectSettings implements Listener {
         if (player.getWorld().getName().equalsIgnoreCase(this.configuration.getString("nameOfLobbyWorld"))) {
 
 
-            if (e.getTo().getBlockY() >= -100 && !isTriggered) {
-
-                isTriggered = true;
+            if (e.getTo().getBlockY() <= 0) {
 
                 Location spawnLobbyLocation = new Location(plugin.getServer().getWorld(this.configuration.getString("nameOfLobbyWorld")), this.configuration.getDouble("lobbySpawnLocation.x"), this.configuration.getDouble("lobbySpawnLocation.y"), this.configuration.getDouble("lobbySpawnLocation.z"), (float) this.configuration.getDouble("lobbySpawnLocation.yaw"), (float) this.configuration.getDouble("lobbySpawnLocation.pitch"));
 

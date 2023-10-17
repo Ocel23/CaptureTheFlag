@@ -2,11 +2,13 @@ package me.ocel.capturetheflag;
 
 import me.ocel.capturetheflag.gameMap.GameMap;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +59,21 @@ public class Uttils {
         return team;
     }
 
+    public static void resetPlayerSettings(Player player, CaptureTheFlag plugin) {
+        player.setHealth(20);
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
+        }
+        player.setGameMode(GameMode.ADVENTURE);
+        player.setInvisible(false);
+        player.showPlayer(plugin, player);
+        player.getInventory().clear();
+        player.setAllowFlight(false);
+        player.setFlying(false);
+        player.setPlayerListName(ChatColor.WHITE + player.getName());
+        player.setGlowing(false);
+        player.setFoodLevel(20);
+    }
 
 
 }
