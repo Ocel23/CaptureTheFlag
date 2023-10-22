@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -30,7 +31,6 @@ public class ProtectSettings implements Listener {
         this.configuration = plugin.getConfig();
     }
 
-
     //protect drop items from player
     @EventHandler
     private void onDropItem(PlayerDropItemEvent e) {
@@ -39,6 +39,12 @@ public class ProtectSettings implements Listener {
         }
     }
 
+    @EventHandler
+    private void onBlockPlace(BlockPlaceEvent e) {
+        if (e.getBlock().getType() == Material.WHITE_BANNER) {
+            e.setCancelled(true);
+        }
+    }
 
     //protect player hunger increasing
     @EventHandler

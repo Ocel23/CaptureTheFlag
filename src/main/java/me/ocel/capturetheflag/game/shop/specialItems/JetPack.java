@@ -38,10 +38,26 @@ public class JetPack implements Listener {
 
             Inventory inventory = player.getInventory();
 
-            inventory.remove(e.getItem());
+            for (ItemStack item : inventory.getContents()) {
+
+                if (item == null) {
+                    continue;
+                }
+
+                if (item.getType() == Material.FIREWORK_ROCKET) {
+
+                    int amount = item.getAmount();
+
+                    item.setAmount(amount - 1);
+                    break;
+
+                }
+            }
 
             plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                player.getInventory().setChestplate(chestplate);
+                if (chestplate != null) {
+                    player.getInventory().setChestplate(chestplate);
+                }
                 player.spawnParticle(Particle.CLOUD, player.getLocation(), 50);
             }, 28L);
         }

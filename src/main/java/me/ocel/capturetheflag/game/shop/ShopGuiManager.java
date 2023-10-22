@@ -289,13 +289,31 @@ public class ShopGuiManager implements CommandExecutor, Listener {
 
         Block block = e.getBlock();
 
+        Inventory inventory = e.getPlayer().getInventory();
+
         if (block.getType() == Material.TNT) {
 
             Player player = e.getPlayer();
 
-            TNTPrimed tntPrimed =  (TNTPrimed) player.getWorld().spawnEntity(block.getLocation(), EntityType.PRIMED_TNT);
+            player.getWorld().spawnEntity(block.getLocation(), EntityType.PRIMED_TNT);
 
             e.setCancelled(true);
+
+            for (ItemStack item : inventory.getContents()) {
+
+                if (item == null) {
+                    continue;
+                }
+
+                if (item.getType() == Material.TNT) {
+
+                    int amount = item.getAmount();
+
+                    item.setAmount(amount - 1);
+                    break;
+
+                }
+            }
 
         }
     }

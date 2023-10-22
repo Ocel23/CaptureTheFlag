@@ -33,11 +33,11 @@ public class DiamondSpawner implements Spawner{
         this.plugin = plugin;
         this.gameMap = gameMap;
         this.configuration = plugin.getConfig();
-        this.spawnerlocation = new Location(gameMap.getWorld(), this.configuration.getDouble("diamondSpawnerLocation.x"), configuration.getDouble("diamondSpawnerLocation.y"), configuration.getDouble("diamondSpawnerLocation.z"));
-        this.hologramLocation = spawnerlocation;
     }
 
     public void createHolograms() {
+        this.spawnerlocation = new Location(gameMap.getWorld(), this.configuration.getDouble("diamondSpawnerLocation.x"), configuration.getDouble("diamondSpawnerLocation.y"), configuration.getDouble("diamondSpawnerLocation.z"));
+        this.hologramLocation = spawnerlocation;
         hologramLocation.subtract(0, 1, 0);
         hologramLocation.add(0.5,0, 0.5);
         diamondSpawnerHologram1 = (ArmorStand) gameMap.getWorld().spawnEntity(hologramLocation, EntityType.ARMOR_STAND);

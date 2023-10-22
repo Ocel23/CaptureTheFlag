@@ -23,6 +23,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Game implements Listener {
@@ -189,6 +190,10 @@ public class Game implements Listener {
         player.setAllowFlight(true);
         player.setFlying(true);
         player.setInvisible(true);
+        player.hidePlayer(plugin, player);
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
+        }
         Location location2 = new Location(gameMap.getWorld(), this.configuration.getDouble("waitForSpawnLocation.x"), this.configuration.getDouble("waitForSpawnLocation.y"), this.configuration.getDouble("waitForSpawnLocation.z"), (float) this.configuration.getDouble("waitForSpawnLocation.yaw"), (float) this.configuration.getDouble("waitForSpawnLocation.pitch"));
         e.setRespawnLocation(location2);
         double x = this.configuration.getDouble("waitForSpawnLocation.x");
@@ -197,7 +202,6 @@ public class Game implements Listener {
         float pitch = (float) this.configuration.getDouble("waitForSpawnLocation.pitch");
         float yaw = (float) this.configuration.getDouble("waitForSpawnLocation.yaw");
 
-        System.out.println("Read from config: x=" + x + ", y=" + y + ", z=" + z + ", pitch=" + pitch + ", yaw=" + yaw);
         Location location1;
         if (player.getPlayerListName().equalsIgnoreCase(ChatColor.BLUE + player.getName())) {
             location1 = new Location(gameMap.getWorld(), this.configuration.getDouble("blueTeamSpawnLocation.x"), this.configuration.getDouble("blueTeamSpawnLocation.y"), this.configuration.getDouble("blueTeamSpawnLocation.z"), (float) this.configuration.getDouble("blueTeamSpawnLocation.yaw"), (float) this.configuration.getDouble("blueTeamSpawnLocation.pitch"));
@@ -221,6 +225,7 @@ public class Game implements Listener {
                     player.setGameMode(GameMode.SURVIVAL);
                     player.setGlowing(false);
                     player.setInvisible(false);
+                    player.showPlayer(plugin, player);
                     cancel();
                 }
             }
@@ -362,6 +367,8 @@ public class Game implements Listener {
             player.setGlowing(true);
             player.sendMessage(ChatColor.BLUE + "Vzal si modrou vlajku. Rychle utíkej!");
 
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 1));
+
             this.statusOfBlueFlag = "ukradena";
 
             for (Player p : plugin.getServer().getOnlinePlayers()) {
@@ -395,6 +402,8 @@ public class Game implements Listener {
             player.setGlowing(true);
 
             player.sendMessage(ChatColor.RED + "Vzal si červenou vlajku. Rychle utíkej.");
+
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 1));
 
             for (Player p : plugin.getServer().getOnlinePlayers()) {
                 p.sendMessage(ChatColor.WHITE + player.getName() + ChatColor.RED + " vzal červenou vlajku.");

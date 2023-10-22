@@ -70,7 +70,13 @@ public class ProtectSettings implements Listener {
     //method for cancel drop item in spectators mode
     @EventHandler
     private void onDropItem(PlayerDropItemEvent e) {
-        if (e.getItemDrop().getItemStack().getType() == Material.CLOCK || e.getItemDrop().getItemStack().getType() == Material.COMPASS) {
+        if (
+                e.getItemDrop().getItemStack().getType() == Material.CLOCK
+                || e.getItemDrop().getItemStack().getType() == Material.COMPASS
+                || e.getItemDrop().getItemStack().getType() == Material.BLUE_BANNER
+                || e.getItemDrop().getItemStack().getType() == Material.RED_BANNER
+        )
+        {
             e.setCancelled(true);
         }
     }

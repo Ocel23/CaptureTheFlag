@@ -28,16 +28,25 @@ public class IronSpawner implements Spawner{
 
     private int seconds;
 
+    private String sX;
+
+    private String sY;
+
+    private String sZ;
+
     public IronSpawner(CaptureTheFlag plugin, GameMap gameMap, String x, String y, String z) {
+        this.sX = x;
+        this.sY = y;
+        this.sZ = z;
         this.seconds = 200;
         this.plugin = plugin;
         this.gameMap = gameMap;
         this.configuration = plugin.getConfig();
-        spawnerlocation = new Location(gameMap.getWorld(), this.configuration.getDouble(x), configuration.getDouble(y), configuration.getDouble(z));
-        hologramLocation = spawnerlocation;
     }
 
     public void createHolograms() {
+        spawnerlocation = new Location(gameMap.getWorld(), this.configuration.getDouble(sX), configuration.getDouble(sY), configuration.getDouble(sZ));
+        hologramLocation = spawnerlocation;
         hologramLocation.subtract(0,1, 0);
         hologramLocation.add(0.5,0, 0.5);
         ironSpawnerHologram1 = (ArmorStand) gameMap.getWorld().spawnEntity(hologramLocation, EntityType.ARMOR_STAND);
